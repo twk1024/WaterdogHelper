@@ -44,9 +44,7 @@ class WaterdogHelper extends PluginBase implements Listener{
 		$packet = $event->getPacket();
 		if($packet instanceof LoginPacket){
 			$this->caches[strtolower($packet->clientData["ThirdPartyName"])] = [
-				"uuid" => $packet->clientData["Waterdog_OriginalUUID"] ?? null,
-				"ip" => $packet->clientData["Waterdog_RemoteIP"] ?? null,
-				"xuid" => $packet->clientData["Waterdog_XUID"] ?? null
+				"ip" => $packet->clientData["Waterdog_IP"] ?? null
 			];
 		}
 	}
@@ -54,9 +52,9 @@ class WaterdogHelper extends PluginBase implements Listener{
 	public function onPlayerPreLogin(PlayerPreLoginEvent $event) : void{
 		$player = $event->getPlayer();
 
-		[$uuid, $ip, $xuid] = array_values($this->caches[$player->getLowerCaseName()]);
+		[$ip] = array_values($this->caches[$player->getLowerCaseName()]);
 
-		if($uuid === null || $ip === null || $xuid === null){
+		if($ip === null){
 			$event->setKickMessage($this->getConfig()->get("connect_as_lobby"));
 			$event->setCancelled();
 			return;
@@ -65,26 +63,11 @@ class WaterdogHelper extends PluginBase implements Listener{
 		if($playerReflection === null){
 			$playerReflection = new ReflectionClass(Player::class);
 		}
-		static $ipProperty = null;
-		if($ipProperty === null){
-			$ipProperty = $playerReflection->getProperty("ip");
-		}
-		static $xuidProperty = null;
-		if($xuidProperty === null){
-			$xuidProperty = $playerReflection->getProperty("xuid");
-		}
-		static $uuidProperty = null;
-		if($uuidProperty === null){
-			$uuidProperty = $playerReflection->getProperty("uuid");
-		}
+		$ipProperty = $playerReflection->getProperty("ip");
 
 		$ipProperty->setAccessible(true);
-		$xuidProperty->setAccessible(true);
-		$uuidProperty->setAccessible(true);
 
 		$ipProperty->setValue($player, $ip);
-		$xuidProperty->setValue($player, $xuid);
-		$uuidProperty->setValue($player, UUID::fromString($uuid));
 
 		$this->getLogger()->debug("{$player->getName()} is logged into XBOX Live");
 		unset($this->caches[$player->getLowerCaseName()]);
