@@ -37,7 +37,7 @@ class TransferCommand extends PluginCommand{
 				$sender->sendMessage(TextFormat::RED . "Player not found.");
 				return false;
 			}
-			WaterdogHelper::getInstance()->transfer($player, $server);
+			$player->transfer($server);
 			$sender->sendMessage("Player {$player->getName()} transferred successfully.");
 		}else{
 			if(count($args) < 1){
@@ -47,7 +47,7 @@ class TransferCommand extends PluginCommand{
 			if(trim($server ?? "") === ""){
 				throw new InvalidCommandSyntaxException();
 			}
-			WaterdogHelper::getInstance()->transfer($sender, $server);
+            $sender->getPlayer()->transfer($server);
 			$sender->sendMessage("Transferring you to {$server}...");
 		}
 		return true;
