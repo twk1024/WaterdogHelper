@@ -1,6 +1,8 @@
 # WaterdogHelper
 A PocketMine-MP plugin that allows control Waterdog Proxy.
 
+- Update > This is the edited version of original WaterdogHelper for WaterdogPE, that new version of Waterdog. (https://github.com/WaterdogPE/Waterdog)
+
 # API
 ```php
 $api = \alvin0319\WaterdogHelper\WaterdogHelper::getInstance();
